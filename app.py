@@ -2,8 +2,11 @@ from flask import Flask, render_template, url_for, request
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-
-
+from sklearn.model_selection import train_test_split
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 app = Flask(__name__)
 
 
@@ -24,13 +27,15 @@ def predict():
     corpus_clean = []
     for txt in corpus:
         word_tokens = [word.lower() for word in word_tokenize(txt)]
-        clean_words = [word for word in word_tokens if (not word in set(stopwords.words('english')) and  word.isalpha())]
-        lemmmatizer= WordNetLemmatizer()
-        clean_words = [lemmmatizer.lemmatize(word.lower()) for word in clean_words]
+        clean_words = [word for word in word_tokens if (
+            not word in set(stopwords.words('english')) and word.isalpha())]
+        lemmmatizer = WordNetLemmatizer()
+        clean_words = [lemmmatizer.lemmatize(
+            word.lower()) for word in clean_words]
         corpus_clean.append(' '.join(clean_words))
     cv = CountVectorizer()
     X = cv.fit_transform(corpus_clean)
-    from sklearn.model_selection import train_test_split
+
     X_train, X_test, y_train, y_test = train_test_split(
         X, df_y, test_size=0.33, random_state=42)
     # Navie Bayes
