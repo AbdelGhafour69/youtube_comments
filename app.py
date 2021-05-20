@@ -13,6 +13,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    nltk.download('punkt')
+    nltk.download('wordnet')
+
     return render_template('home.html')
 
 
